@@ -1,25 +1,33 @@
 # Albert:vert Béatrice:rouge Claude:violet Denis:bleu Emilie:jaune
 
 class Distribution:
-    def __init__(self, distribution_dict, people):
+    def __init__(self, distribution_dict, people, transitions):
         self.distribution_dict = distribution_dict
         self.people = people
+        self.transitions = transitions
 
     def validity_on_transition(self):
-        nbr_Rbois = 0
-        nbr_Cbois = 0
-        nbr_Rtarte = 0
-        nbr_Ctarte = 0
+        result = True
+        activities_sum = {}
+
 
         for citizen in self.distribution_dict:
-            nbr_Rbois += self.distribution_dict[citizen]["Rbois"] * 10
-            nbr_Cbois += self.distribution_dict[citizen]["Cbois"]
-            nbr_Rtarte += self.distribution_dict[citizen]["Rtarte"]
-            nbr_Ctarte += self.distribution_dict[citizen]["Ctarte"]
+            for economic_activity in self.distribution_dict[citizen]:
+                if(economic_activity in activities_sum):
+                    activities_sum[economic_activity] += self.distribution_dict[citizen][economic_activity]
+                else:
+                    activities_sum[economic_activity] = self.distribution_dict[citizen][economic_activity]
 
-            ok_bois = (nbr_Rbois == nbr_Cbois)
-            ok_tarte = (nbr_Rtarte * 7 == nbr_Ctarte)
-            return ok_bois and ok_tarte
+        for transition in self.transitions:
+            transition_ok = self.transitions[transition](activities_sum)
+            if(not transition_ok):
+                print(transition + " is not good.\n")
+            result = result and transition_ok
+
+        if(not result):
+            print(activities_sum)
+
+        return result
 
     def criterion_of_social_stability(self):
         return True
