@@ -1,4 +1,5 @@
 # Albert:vert Béatrice:rouge Claude:violet Denis:bleu Emilie:jaune
+import copy
 
 class Distribution:
     def __init__(self, distribution_dict, people, transitions):
@@ -6,7 +7,7 @@ class Distribution:
         self.people = people
         self.transitions = transitions
 
-    def validity_on_transition(self):
+    def validity_on_transitions(self):
         result = True
         activities_sum = {}
 
@@ -18,8 +19,8 @@ class Distribution:
                 else:
                     activities_sum[economic_activity] = self.distribution_dict[citizen][economic_activity]
 
-        for transition in self.transitions:
-            transition_ok = self.transitions[transition](activities_sum)
+        for transition in self.transitions["check"]:
+            transition_ok = self.transitions["check"][transition](activities_sum)
             if(not transition_ok):
                 print(transition + " is not good.\n")
             result = result and transition_ok
@@ -30,7 +31,41 @@ class Distribution:
         return result
 
     def criterion_of_social_stability(self):
-        return True
+        result = True
+        for citizen in self.distribution_dict:
+            social_stability = self.social_stability_with(citizen)
+            result = result and social_stability
+            if(not social_stability):
+                print("problem with " + citizen)
+
+        return result
+
+    def social_stability_with(self, citizen):
+        distribution_with_activities = copy.deepcopy(self)
+        del distribution_with_activities[citizen]
+
+        distribution_without_activities = copy.deepcopy(self)
+        del distribution_without_activities[citizen]
+
+        for activity in self[citizen]:
+            distribution_without_activities.remove_induced_activities(activity, self[citizen][activity])
+
+        # print("distribution with " + citizen + " activities")
+        # print(distribution_with_activities.well_being_by_citizen())
+        # print()
+        # print("distribution without " + citizen + " activities")
+        # print(distribution_without_activities.well_being_by_citizen())
+        # print()
+        # print("result=" + str(distribution_with_activities >= distribution_without_activities))
+
+        return distribution_with_activities >= distribution_without_activities
+
+    def remove_induced_activities(self, activity, quantity):
+        (induced_activity, induced_quantity) = self.transitions["induced"][activity](quantity)
+        average = induced_quantity / self.number_of_citizens()
+
+        for citizen in self.distribution_dict:
+            self.distribution_dict[citizen][induced_activity] -= average
 
     def well_being_by_activity(self):
         distribution_result = {}
@@ -66,6 +101,20 @@ class Distribution:
 
         return False
 
+    def number_of_citizens(self):
+        return len(self.distribution_dict)
+
+    def __eq__(self, distribution):
+        distribution_1 = list(self.well_being_by_citizen().values())
+        distribution_2 = list(distribution.well_being_by_citizen().values())
+        distribution_1.sort()
+        distribution_2.sort()
+
+        return distribution_1 == distribution_2
+
+    def __ge__(self, distribution):
+        return ((self == distribution) or (self > distribution))
+
     def __str__(self):
         result = "Distribution:\n"
         result += str(self.distribution_dict) + "\n\n"
@@ -78,6 +127,9 @@ class Distribution:
 
     def __setitem__(self, key, value):
         self.distribution_dict[key] = value
+
+    def __delitem__(self, key):
+        del self.distribution_dict[key]
 
     def  __iter__(self):
         for citizen in self.distribution_dict:
