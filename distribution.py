@@ -1,6 +1,14 @@
 # Albert:vert Béatrice:rouge Claude:violet Denis:bleu Emilie:jaune
 import copy
 
+class Distribution_factory:
+    def __init__(self, people, transitions):
+        self.people = people
+        self.transitions = transitions
+
+    def create_distribution(self, distribution_dict):
+        return Distribution(distribution_dict, self.people, self.transitions)
+
 class Distribution:
     def __init__(self, distribution_dict, people, transitions):
         self.distribution_dict = distribution_dict
