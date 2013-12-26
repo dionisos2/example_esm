@@ -1,5 +1,21 @@
-def approx_equal(a, b):
-    return abs(a-b) < 0.000001
+from utils import *
+
+class Transition:
+    def __init__(self, transitions, productions):
+        self.transitions = transitions
+        self.productions = productions
+
+    def __getitem__(self, key):
+        return self.transitions[key]
+
+    def __setitem__(self, key, value):
+        self.transitions[key] = value
+
+    def is_production(self, economic_activity):
+        return (economic_activity in self.productions)
+
+    def is_consumption(self, economic_activity):
+        return not(is_production(economic_activit))
 
 
 def create_transitions():
@@ -33,4 +49,8 @@ def create_transitions():
     transitions["induced"]["Rtarte"] = induced_by_Rtarte
     transitions["induced"]["Ctarte"] = induced_by_Ctarte
 
-    return transitions
+    transitions["economic_activities"] = {}
+    transitions["economic_activities"] = ["Rbois", "Cbois", "Rtarte", "Ctarte"]
+
+    transition = Transition(transitions, ["Rbois", "Rtarte"])
+    return transition

@@ -43,8 +43,8 @@ class Distribution:
         for citizen in self.distribution_dict:
             social_stability = self.social_stability_with(citizen)
             result = result and social_stability
-            if(not social_stability):
-                print("problem with " + citizen)
+            # if(not social_stability):
+            #     print("problem with " + citizen)
 
         return result
 
@@ -57,14 +57,6 @@ class Distribution:
 
         for activity in self[citizen]:
             distribution_without_activities.remove_induced_activities(activity, self[citizen][activity])
-
-        # print("distribution with " + citizen + " activities")
-        # print(distribution_with_activities.well_being_by_citizen())
-        # print()
-        # print("distribution without " + citizen + " activities")
-        # print(distribution_without_activities.well_being_by_citizen())
-        # print()
-        # print("result=" + str(distribution_with_activities >= distribution_without_activities))
 
         return distribution_with_activities >= distribution_without_activities
 
@@ -119,6 +111,9 @@ class Distribution:
         distribution_2.sort()
 
         return distribution_1 == distribution_2
+
+    def __len__(self):
+        return len(self.distribution_dict)
 
     def __ge__(self, distribution):
         return ((self == distribution) or (self > distribution))

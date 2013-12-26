@@ -70,6 +70,9 @@ def create_people():
 
 def create_satisfaction_function(satisfaction_coef, extreme_satisfaction):
     def satisfaction_function(x):
+        if(x<0):
+            return -100000
+
         satisfaction = x*satisfaction_coef
         if(extreme_satisfaction > 0):
             if(satisfaction > extreme_satisfaction):
