@@ -7,6 +7,11 @@ from distribution import Distribution, Distribution_factory
 from distribution_finder import Distribution_finder
 import copy
 
+def citizen_effects(distribution, citizen):
+    effects = {}
+    effects["bois"] = distribution[citizen]["Rbois"]*10-distribution[citizen]["Cbois"]
+    effects["tarte"] = distribution[citizen]["Rtarte"]*7-distribution[citizen]["Ctarte"]
+    return effects
 
 distribution_factory = Distribution_factory(create_people(), create_transitions())
 
@@ -20,6 +25,11 @@ distribution_1 = distribution_finder.optimize(distribution_1)
 print(distribution_1)
 print(distribution_1.validity_on_transitions())
 print(distribution_1.criterion_of_social_stability())
+
+for citizen in distribution_1:
+    print(citizen)
+    print(citizen_effects(distribution_1, citizen))
+
 
 # for x in range(10000):
 #     random_distribution_tmp = distribution_finder.random_distribution()

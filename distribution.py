@@ -49,6 +49,7 @@ class Distribution:
         return result
 
     def social_stability_with(self, citizen):
+        # print("--------------------" + citizen + "-"*20)
         distribution_with_activities = copy.deepcopy(self)
         del distribution_with_activities[citizen]
 
@@ -58,14 +59,23 @@ class Distribution:
         for activity in self[citizen]:
             distribution_without_activities.remove_induced_activities(activity, self[citizen][activity])
 
+        # print(distribution_with_activities)
+        # print(distribution_without_activities)
+        # print(distribution_with_activities >= distribution_without_activities)
         return distribution_with_activities >= distribution_without_activities
 
     def remove_induced_activities(self, activity, quantity):
         (induced_activity, induced_quantity) = self.transitions["induced"][activity](quantity)
-        average = induced_quantity / self.number_of_citizens()
 
+        total_quantity = 0
         for citizen in self.distribution_dict:
-            self.distribution_dict[citizen][induced_activity] -= average
+            total_quantity += self[citizen][induced_activity]
+
+        if(total_quantity != 0):
+            percent = induced_quantity / total_quantity
+
+            for citizen in self.distribution_dict:
+                self.distribution_dict[citizen][induced_activity] *= (1 - percent)
 
     def well_being_by_activity(self):
         distribution_result = {}
