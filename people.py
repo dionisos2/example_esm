@@ -1,5 +1,31 @@
 # Albert:vert Béatrice:rouge Claude:violet Denis:bleu Emilie:jaune
 
+def create_people_2():
+    people = {}
+    people["Albert"] = {}
+    people["Béatrice"] = {}
+    people["Albert"]["Rpomme"] = {"coef": -1, "max": 10}
+    people["Albert"]["Cpomme"] = {"coef": 1, "max": 10}
+    people["Albert"]["Rpoire"] = {"coef": -2, "max": 10}
+    people["Albert"]["Cpoire"] = {"coef": 2, "max": 20}
+
+    people["Béatrice"]["Rpomme"] = {"coef": -2, "max": 10}
+    people["Béatrice"]["Cpomme"] = {"coef": 2, "max": 15}
+    people["Béatrice"]["Rpoire"] = {"coef": -1, "max": 10}
+    people["Béatrice"]["Cpoire"] = {"coef": 1, "max": 10}
+
+    return create_all_satisfaction_function(people)
+
+def create_all_satisfaction_function(people):
+    for citizen in people:
+        for economic_activity in people[citizen]:
+            satisfaction_coef = people[citizen][economic_activity]["coef"]
+            extreme_satisfaction = people[citizen][economic_activity]["max"]
+
+            people[citizen][economic_activity]["satisfaction_function"] = create_satisfaction_function(satisfaction_coef, extreme_satisfaction)
+
+    return people
+
 def create_people():
     people = {}
     people["Albert"] = {}
@@ -59,14 +85,7 @@ def create_people():
     people["Emilie"]["Ctarte"]["coef"] = 1
     people["Emilie"]["Ctarte"]["max"] = 4
 
-    for citizen in people:
-        for economic_activity in people[citizen]:
-            satisfaction_coef = people[citizen][economic_activity]["coef"]
-            extreme_satisfaction = people[citizen][economic_activity]["max"]
-
-            people[citizen][economic_activity]["satisfaction_function"] = create_satisfaction_function(satisfaction_coef, extreme_satisfaction)
-
-    return people
+    return create_all_satisfaction_function(people)
 
 def create_satisfaction_function(satisfaction_coef, extreme_satisfaction):
     def satisfaction_function(x):
@@ -79,7 +98,7 @@ def create_satisfaction_function(satisfaction_coef, extreme_satisfaction):
                 satisfaction = extreme_satisfaction
         else:
             if(satisfaction < extreme_satisfaction):
-                satisfaction = -100000
+                satisfaction = -10000
 
         return satisfaction
 

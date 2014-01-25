@@ -1,5 +1,11 @@
 # Albert:vert Béatrice:rouge Claude:violet Denis:bleu Emilie:jaune
 import copy
+import decimal
+import operator
+from utils import *
+
+global count
+count = 0
 
 class Distribution_factory:
     def __init__(self, people, transitions):
@@ -38,44 +44,90 @@ class Distribution:
 
         return result
 
-    def criterion_of_social_stability(self):
+    def criterion_of_social_stability(self, show = False):
+        if (not self.validity_on_transitions()):
+            return False
+
         result = True
         for citizen in self.distribution_dict:
-            social_stability = self.social_stability_with(citizen)
+            social_stability = self.social_stability_with(citizen, show)
             result = result and social_stability
-            # if(not social_stability):
-            #     print("problem with " + citizen)
+            if((show)and(not social_stability)):
+                print("problem with " + citizen)
 
         return result
 
-    def social_stability_with(self, citizen):
-        # print("--------------------" + citizen + "-"*20)
+    def remove_self_production(self, citizen):
+        for production_activity in self[citizen]:
+            if(self.transitions.is_production(production_activity)):
+                production_quantity = self[citizen][production_activity]
+                (consumption_activity, consumption_induced_quantity) = self.transitions["induced"][production_activity](production_quantity)
+                consumption_quantity = self[citizen][consumption_activity]
+                (plop, production_induced_quantity) = self.transitions["induced"][consumption_activity](consumption_quantity)
+
+
+                if(production_quantity >= production_induced_quantity):
+                    production_quantity -= production_induced_quantity
+                    consumption_quantity = 0
+                else:
+                    consumption_quantity -= consumption_induced_quantity
+                    production_quantity = 0
+
+                self[citizen][production_activity] = production_quantity
+                self[citizen][consumption_activity] = consumption_quantity
+
+
+
+    def social_stability_with(self, citizen, show = False):
+        if(show):
+            print("-"*10 + citizen + "-"*10)
+
         distribution_with_activities = copy.deepcopy(self)
         del distribution_with_activities[citizen]
 
         distribution_without_activities = copy.deepcopy(self)
+        distribution_without_activities.remove_self_production(citizen)
+
+        for activity in distribution_without_activities[citizen]:
+            distribution_without_activities.remove_induced_activities(citizen, activity)
+
         del distribution_without_activities[citizen]
 
-        for activity in self[citizen]:
-            distribution_without_activities.remove_induced_activities(activity, self[citizen][activity])
-
-        # print(distribution_with_activities)
-        # print(distribution_without_activities)
-        # print(distribution_with_activities >= distribution_without_activities)
+        if(show):
+            print(distribution_with_activities)
+            print(distribution_without_activities)
+            print(distribution_with_activities >= distribution_without_activities)
         return distribution_with_activities >= distribution_without_activities
 
-    def remove_induced_activities(self, activity, quantity):
+    def remove_induced_activities(self, concerned_citizen, activity):
+        # maximize the resulted distribution
+
+        quantity = self[concerned_citizen][activity]
         (induced_activity, induced_quantity) = self.transitions["induced"][activity](quantity)
 
-        total_quantity = 0
-        for citizen in self.distribution_dict:
-            total_quantity += self[citizen][induced_activity]
 
-        if(total_quantity != 0):
-            percent = induced_quantity / total_quantity
+        while((induced_quantity > 0)and(not approx_equal(induced_quantity, 0))):
+            well_being_by_citizen = self.well_being_by_citizen()
+            if(self.transitions.is_production(activity)):
+                sorted_well_beings = sorted(well_being_by_citizen.items(), key=operator.itemgetter(1), reverse=True)
+            else:
+                sorted_well_beings = sorted(well_being_by_citizen.items(), key=operator.itemgetter(1))
 
-            for citizen in self.distribution_dict:
-                self.distribution_dict[citizen][induced_activity] *= (1 - percent)
+
+            for (citizen, well_being) in sorted_well_beings:
+                if(citizen != concerned_citizen):
+                   if(self.distribution_dict[citizen][induced_activity] > 0.01):
+                       self.distribution_dict[citizen][induced_activity] -= 0.01
+                       induced_quantity -= 0.01
+                       break
+                   else:
+                       if(self.distribution_dict[citizen][induced_activity] > 0):
+                           induced_quantity -= self.distribution_dict[citizen][induced_activity]
+                           self.distribution_dict[citizen][induced_activity] = 0
+
+    def plop(self):
+        global count
+        return count
 
     def well_being_by_activity(self):
         distribution_result = {}
@@ -86,6 +138,8 @@ class Distribution:
                 satisfaction = self.people[citizen][economic_activity]["satisfaction_function"](self.distribution_dict[citizen][economic_activity])
 
                 distribution_result[citizen][economic_activity] = satisfaction
+                global count
+                count += 1
 
         return distribution_result
 
@@ -95,7 +149,7 @@ class Distribution:
         well_being_by_activity = self.well_being_by_activity()
 
         for citizen in well_being_by_activity:
-            result[citizen] = sum([activity for activity in well_being_by_activity[citizen].values()])
+            result[citizen] = round(sum([activity for activity in well_being_by_activity[citizen].values()]), 3)
 
         return result
 

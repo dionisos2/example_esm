@@ -54,3 +54,40 @@ def create_transitions():
 
     transition = Transition(transitions, ["Rbois", "Rtarte"])
     return transition
+
+def create_transitions_2():
+    transitions = {}
+    def pomme_ok(activities_sum):
+        return approx_equal(activities_sum["Rpomme"], activities_sum["Cpomme"])
+
+    def poire_ok(activities_sum):
+        return approx_equal(activities_sum["Rpoire"], activities_sum["Cpoire"])
+
+    transitions["check"] = {}
+    transitions["check"]["pomme_ok"] = pomme_ok
+    transitions["check"]["poire_ok"] = poire_ok
+
+
+    def induced_by_Rpomme(Rpomme):
+        return ("Cpomme", Rpomme)
+
+    def induced_by_Cpomme(Cpomme):
+        return ("Rpomme", Cpomme)
+
+    def induced_by_Rpoire(Rpoire):
+        return ("Cpoire", Rpoire)
+
+    def induced_by_Cpoire(Cpoire):
+        return ("Rpoire", Cpoire)
+
+    transitions["induced"] = {}
+    transitions["induced"]["Rpomme"] = induced_by_Rpomme
+    transitions["induced"]["Cpomme"] = induced_by_Cpomme
+    transitions["induced"]["Rpoire"] = induced_by_Rpoire
+    transitions["induced"]["Cpoire"] = induced_by_Cpoire
+
+    transitions["economic_activities"] = {}
+    transitions["economic_activities"] = ["Rpomme", "Cpomme", "Rpoire", "Cpoire"]
+
+    transition = Transition(transitions, ["Rpomme", "Rpoire"])
+    return transition

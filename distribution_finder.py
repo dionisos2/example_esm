@@ -8,11 +8,11 @@ class Distribution_finder:
         self.distribution_factory = distribution_factory
         self.transitions = self.distribution_factory.transitions
         self.people = self.distribution_factory.people
-        self.create_exemples()
         self.min_value = 0
         self.max_value = 5
-        self.stability_max = 500
+        self.stability_max = 10000
         self.mute_speed = 0.5
+        self.mute_iterations = 10
 
     def mute(self, distribution):
         citizen = random.choice(list(distribution.distribution_dict.keys()))
@@ -30,16 +30,20 @@ class Distribution_finder:
         return muted_distribution
 
     def optimize(self, distribution):
-        distribution = copy.deepcopy(distribution)
+        print("OPTIMIZE")
+        self.count = 0
         stability = 0
         while(stability < self.stability_max):
+            self.count += 1
             distribution_tmp = self.mute(distribution)
+            for i in range(random.randint(0, self.mute_iterations)):
+                distribution_tmp = self.mute(distribution_tmp)
             if((distribution_tmp > distribution)and(distribution_tmp.criterion_of_social_stability())):
-                print(stability)
                 stability = 0
                 distribution = distribution_tmp
             else:
                 stability += 1
+            print(stability)
 
         return distribution
 
@@ -97,10 +101,10 @@ class Distribution_finder:
 
     def create_exemples(self):
         distribution_dict_1 = {"Albert":{"Rbois":0.5, "Cbois":5, "Rtarte":0, "Ctarte":0},
-                               "Béatrice":{"Rbois":0.5, "Cbois":5, "Rtarte":0, "Ctarte":0},
-                               "Claude":{"Rbois":0.5, "Cbois":5, "Rtarte":0, "Ctarte":0},
-                               "Denis":{"Rbois":0.5, "Cbois":5, "Rtarte":0, "Ctarte":0},
-                               "Emilie":{"Rbois":0.5, "Cbois":5, "Rtarte":0, "Ctarte":0}}
+                               "Béatrice":{"Rbois":1, "Cbois":5, "Rtarte":0, "Ctarte":0},
+                               "Claude":{"Rbois":0.5, "Cbois":10, "Rtarte":0, "Ctarte":0},
+                               "Denis":{"Rbois":1, "Cbois":5, "Rtarte":0, "Ctarte":0},
+                               "Emilie":{"Rbois":0.5, "Cbois":10, "Rtarte":0, "Ctarte":0}}
 
         distribution_dict_2 = {"Albert":{"Rbois":1, "Cbois":10, "Rtarte":0, "Ctarte":0},
                                "Béatrice":{"Rbois":1, "Cbois":10, "Rtarte":0, "Ctarte":0},

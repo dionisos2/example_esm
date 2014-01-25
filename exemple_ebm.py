@@ -1,43 +1,37 @@
 #!/bin/python
 # Albert:vert Béatrice:rouge Claude:violet Denis:bleu Emilie:jaune
 
-from people import create_people
-from transition import create_transitions
+from people import create_people, create_people_2
+from transition import create_transitions, create_transitions_2
 from distribution import Distribution, Distribution_factory
 from distribution_finder import Distribution_finder
+from esm_tools import *
 import copy
 
-def citizen_effects(distribution, citizen):
-    effects = {}
-    effects["bois"] = distribution[citizen]["Rbois"]*10-distribution[citizen]["Cbois"]
-    effects["tarte"] = distribution[citizen]["Rtarte"]*7-distribution[citizen]["Ctarte"]
-    return effects
-
-distribution_factory = Distribution_factory(create_people(), create_transitions())
+distribution_factory = Distribution_factory(create_people_2(), create_transitions_2())
 
 distribution_finder = Distribution_finder(distribution_factory)
 
-random_distribution = distribution_finder.random_distribution()
 
-distribution_1 = distribution_finder.distribution_1
-print(distribution_1)
-distribution_1 = distribution_finder.optimize(distribution_1)
-print(distribution_1)
-print(distribution_1.validity_on_transitions())
-print(distribution_1.criterion_of_social_stability())
+d_1 = {'Albert': {'Rpomme':5, 'Cpomme':0, 'Rpoire':0, 'Cpoire':5},
+       'Béatrice':{'Rpomme':0, 'Cpomme':5, 'Rpoire':5, 'Cpoire':0}}
 
-for citizen in distribution_1:
-    print(citizen)
-    print(citizen_effects(distribution_1, citizen))
+distribution = distribution_factory.create_distribution(d_1)
 
+print(distribution.criterion_of_social_stability())
+print(distribution.validity_on_transitions())
+input()
+distribution = distribution_finder.optimize(distribution)
+print(distribution.criterion_of_social_stability(True))
+print(distribution)
+print(distribution.validity_on_transitions())
+print(distribution.criterion_of_social_stability())
+view_auto_productions(distribution)
 
-# for x in range(10000):
-#     random_distribution_tmp = distribution_finder.random_distribution()
-#     if((random_distribution_tmp > random_distribution)and(random_distribution_tmp.criterion_of_social_stability())):
-#         random_distribution = random_distribution_tmp
-
-# print(random_distribution)
-# print(random_distribution.validity_on_transitions())
-# print(random_distribution.criterion_of_social_stability())
+# distribution = good_random_distribution(distribution_finder)
+# view_auto_productions(distribution)
+# print(distribution)
+# print(distribution.validity_on_transitions())
+# print(distribution.criterion_of_social_stability())
 
 # print(distribution_finder.distribution_1)
