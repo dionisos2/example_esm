@@ -4,9 +4,6 @@ import decimal
 import operator
 from utils import *
 
-global count
-count = 0
-
 class Distribution_factory:
     def __init__(self, people, transitions):
         self.people = people
@@ -125,9 +122,6 @@ class Distribution:
                            induced_quantity -= self.distribution_dict[citizen][induced_activity]
                            self.distribution_dict[citizen][induced_activity] = 0
 
-    def plop(self):
-        global count
-        return count
 
     def well_being_by_activity(self):
         distribution_result = {}
@@ -138,8 +132,6 @@ class Distribution:
                 satisfaction = self.people[citizen][economic_activity]["satisfaction_function"](self.distribution_dict[citizen][economic_activity])
 
                 distribution_result[citizen][economic_activity] = satisfaction
-                global count
-                count += 1
 
         return distribution_result
 
@@ -187,6 +179,8 @@ class Distribution:
         result += str(self.distribution_dict) + "\n\n"
         result += "Satisfaction des citoyens:\n"
         result += str(self.well_being_by_citizen()) + "\n"
+        result += "Validité des transitions: " + str(self.validity_on_transitions()) + "\n"
+        result += "Critère de stabilité sociale: " + str(self.criterion_of_social_stability()) + "\n"
         return result
 
     def __getitem__(self, key):

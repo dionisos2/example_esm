@@ -19,7 +19,6 @@ def good_random_distribution(distribution_finder):
             print(random_distribution)
             print(random_distribution.validity_on_transitions())
             print(random_distribution.criterion_of_social_stability())
-            input()
 
     return random_distribution
 

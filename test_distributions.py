@@ -23,9 +23,10 @@ distribution_1 = distribution_factory.create_distribution(d_1)
 
 distribution_finder = Distribution_finder(distribution_factory)
 
+random_distribution = good_random_distribution(distribution_finder)
 # distribution_finder.optimize(distribution_1)
-print(distribution_1)
-print(distribution_1.well_being_by_activity())
-view_auto_productions(distribution_1)
+print(random_distribution)
+print(random_distribution.well_being_by_activity())
+view_auto_productions(random_distribution)
 
-print(distribution_1.criterion_of_social_stability())
+print(random_distribution.criterion_of_social_stability())

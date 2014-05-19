@@ -36,8 +36,10 @@ class Distribution_finder:
         while(stability < self.stability_max):
             self.count += 1
             distribution_tmp = self.mute(distribution)
+
             for i in range(random.randint(0, self.mute_iterations)):
                 distribution_tmp = self.mute(distribution_tmp)
+
             if((distribution_tmp > distribution)and(distribution_tmp.criterion_of_social_stability())):
                 stability = 0
                 distribution = distribution_tmp
@@ -46,6 +48,27 @@ class Distribution_finder:
             print(stability)
 
         return distribution
+
+    def valid_random_distribution(self, iterations_max):
+        print("SEARCH A VALID RAMDOM DISTRIBUTION")
+        for x in range(iterations_max):
+            print(x)
+            random_distribution = self.random_distribution()
+            if (random_distribution.criterion_of_social_stability()):
+                return random_distribution
+
+        return None
+
+    def distribution_zero(self):
+        economic_activities = self.transitions["economic_activities"]
+        people = self.people
+        distribution = {}
+        for citizen in people:
+            distribution[citizen] = {}
+            for economic_activity in economic_activities:
+                distribution[citizen][economic_activity] = 0
+
+        return self.distribution_factory.create_distribution(distribution)
 
     def random_distribution(self):
         random_productions = self.random_productions()
@@ -122,5 +145,4 @@ class Distribution_finder:
         self.distribution_1 = self.distribution_factory.create_distribution(distribution_dict_1)
         self.distribution_2 = self.distribution_factory.create_distribution(distribution_dict_2)
         self.distribution_3 = self.distribution_factory.create_distribution(distribution_dict_3)
-
 
