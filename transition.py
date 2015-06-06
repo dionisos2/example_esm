@@ -19,6 +19,7 @@ class Transition:
 
 
 def create_transitions():
+    # Du bois et des tartes
     transitions = {}
     def bois_ok(activities_sum):
         return approx_equal(activities_sum["Rbois"] * 10, activities_sum["Cbois"])
@@ -56,6 +57,7 @@ def create_transitions():
     return transition
 
 def create_transitions_2():
+    # des pommes et des poires
     transitions = {}
     def pomme_ok(activities_sum):
         return approx_equal(activities_sum["Rpomme"], activities_sum["Cpomme"])

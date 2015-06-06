@@ -17,6 +17,11 @@ d2 = {'Claude': {'Cbois': 43.40451256954468, 'Rbois': 1, 'Ctarte': 23.1716409696
 d_1 = {'Albert': {'Rpomme':5, 'Cpomme':0, 'Rpoire':0, 'Cpoire':5},
        'Béatrice':{'Rpomme':0, 'Cpomme':5, 'Rpoire':5, 'Cpoire':0}}
 
+distribution_3_people = {'Béatrice': {'Rpoire': 8.896617477560335, 'Cpoire': 0.9038545645214577, 'Rpomme': 0.01230325163291246, 'Cpomme': 7.497478599412243}, 'Albert': {'Rpoire': 0.034739717019565686, 'Cpoire': 9.995459138883245, 'Rpomme': 13.427574780487596, 'Cpomme': 0.4839997079845195}, 'Claude': {'Rpoire': 4.002438763151131, 'Cpoire': 2.034482254326328, 'Rpomme': 0.8909950007542887, 'Cpomme': 6.3493947254780325}}
+
+
+distribution_2_people = {'Béatrice': {'Cpomme': 7.49909347048283, 'Rpomme': 0.0015290323533975192, 'Rpoire': 8.287495095234771, 'Cpoire': 0.7905242204397525}, 'Albert': {'Cpomme': 2.789786467581422, 'Rpomme': 10.28735090571086, 'Rpoire': 1.841252575381236, 'Cpoire': 9.338223450176253}}
+
 # distribution_1 = distribution_factory.create_distribution(d1)
 # distribution_2 = distribution_factory.create_distribution(d2)
 distribution_1 = distribution_factory.create_distribution(d_1)

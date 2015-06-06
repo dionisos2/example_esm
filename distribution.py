@@ -8,6 +8,15 @@ class Distribution_factory:
     def __init__(self, people, transitions):
         self.people = people
         self.transitions = transitions
+        Distribution_factory.verify_people(people, transitions)
+
+    @staticmethod
+    def verify_people(people, transition):
+        for citizen in people:
+            citizen_activities = people[citizen].keys()
+            transition_activities = transition.transitions["induced"].keys()
+            if (citizen_activities != transition_activities):
+                raise ValueError("citizen " + citizen + " do not have correct activities:" + str(citizen_activities) + " should be " + str(transition_activities))
 
     def create_distribution(self, distribution_dict):
         return Distribution(distribution_dict, self.people, self.transitions)
@@ -17,6 +26,7 @@ class Distribution:
         self.distribution_dict = distribution_dict
         self.people = people
         self.transitions = transitions
+        Distribution_factory.verify_people(people, transitions)
 
     def validity_on_transitions(self):
         result = True
@@ -55,6 +65,7 @@ class Distribution:
         return result
 
     def remove_self_production(self, citizen):
+        # remove the consumption than the citizen auto-produce, and the linked production, the result is than we keep only what the citizen produce for other, and what he consume from other productions
         for production_activity in self[citizen]:
             if(self.transitions.is_production(production_activity)):
                 production_quantity = self[citizen][production_activity]
