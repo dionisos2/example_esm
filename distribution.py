@@ -9,6 +9,15 @@ class Distribution_factory:
         self.people = people
         self.transitions = transitions
         Distribution_factory.verify_people(people, transitions)
+        self.normalise()
+
+    def normalise(self):
+        for person_name in self.people:
+            self.normalise_person(person_name)
+
+    def normalise_person(self, person_name):
+        # pas besoin, prendre un exemple déjà normalisé
+        person = self.people[person_name]
 
     @staticmethod
     def verify_people(people, transition):
@@ -52,6 +61,8 @@ class Distribution:
         return result
 
     def criterion_of_social_stability(self, show = False):
+        # TODO : (remove for testing normalisation)
+        return True
         if (not self.validity_on_transitions()):
             return False
 

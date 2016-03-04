@@ -95,13 +95,13 @@ def create_2_people():
     people["Albert"] = {}
     people["Béatrice"] = {}
     people["Albert"]["Rpomme"] = {"coef": -1, "max": 10}
-    people["Albert"]["Cpomme"] = {"coef": 1, "max": 10}
-    people["Albert"]["Rpoire"] = {"coef": -2, "max": 10}
-    people["Albert"]["Cpoire"] = {"coef": 2, "max": 20}
+    people["Albert"]["Cpomme"] = {"coef": 2, "max": 10}
+    people["Albert"]["Rpoire"] = {"coef": -1, "max": 10}
+    people["Albert"]["Cpoire"] = {"coef": 2, "max": 10}
 
     people["Béatrice"]["Rpomme"] = {"coef": -2, "max": 10}
-    people["Béatrice"]["Cpomme"] = {"coef": 2, "max": 15}
-    people["Béatrice"]["Rpoire"] = {"coef": -1, "max": 10}
+    people["Béatrice"]["Cpomme"] = {"coef": 1, "max": 10}
+    people["Béatrice"]["Rpoire"] = {"coef": -2, "max": 10}
     people["Béatrice"]["Cpoire"] = {"coef": 1, "max": 10}
 
     return create_all_satisfaction_function(people)
